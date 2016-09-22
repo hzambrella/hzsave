@@ -1,0 +1,175 @@
+{{ define "redp/redp_index" }}
+<!-- 引用头部 -->
+{{ template "_common/header" getMap "_title" "抢红包话费" "_css" "/public/css/ndcss/redp.css?v=2016091202"}}
+
+<body>
+  {{ template "_common/user_header" . }}
+  <div class="redp_index">
+    {{ if .p_exsist }}
+    <div class="redp_head">
+      <img src="{{.parent_img}}">
+      <span>{{ .parent_name }}给你发来的红包</span>
+    </div>
+    {{ end }}
+    <div class="redp_bg1">
+      <img src="/public/img/redp/redp_index1.png">
+      <form class="red-mobile">
+        <input id="mobile" type="tel" data-match="^(1[3578][0-9]|14[57])\d{8}$" data-invalid="请输入正确的手机号码" placeholder="输入您的号码开抢红包">
+        <div class="red-record">
+          <p>已有<span>{{ .drawNums }}</span>人领取红包，<a>点击查看好友</a></p>
+        </div>
+      </form>
+    </div>
+    <div class="redp_bg2">
+      <img src="/public/img/redp/redp_index2.png">
+      <div class="red-btn">
+        <a class="red-text" id="redbtn">抢红包</a>
+      </div>
+      <div class="red-rule"><a class="white-text" href="/wxapp/v1/redp/rule">了解活动规则</a></div>
+    </div>
+  </div>
+  <div id="mask"></div>
+  <div class="redpcall-box">
+    <div class="closebtn-call">
+      <i class="material-icons">&#xE5C9;</i>
+    </div>
+    <div class="call-text1 yellow-text">
+      <span>恭喜您<br>获得<span class="call-data"></span>元话费</span>
+    </div>
+    <div class="sharebtn-call">
+      <a class="redcall red-text">
+      分享
+    </a>
+    </div>
+    <p class="call-text2 white-text">邀请好友参与活动,有额外奖励</p>
+    <img src="/public/img/redp/nd.png">
+    <p class="call-text3 white-text">长按二维码进入公众号领取</p>
+  </div>
+  <div class="redpflow-box">
+    <div class="closebtn-flow white-text">
+      <i class="material-icons">&#xE5C9;</i>
+    </div>
+    <div class="hook green-text">
+      <i class="material-icons">&#xE86C;</i>
+    </div>
+    <div class="text0">
+      <span class="text1 red-text">恭喜您<span class="flow-data"></span>M流量</span>
+      <br>
+      <span class="text2 grey-text">已到账</span>
+    </div>
+    <div class="sharebtn-flow ">
+      <a class="redflow red-text"><span>分享给朋友</span></a>
+    </div>
+    <div class="tip white-text">
+      <p>邀请好友参与,有额外奖励</p>
+    </div>
+  </div>
+  <script src="/public/js/lib/zepto2.min.js"></script>
+  <script type="text/javascript" src="/public/js/ndjs/common.js?v=2016091407"></script>
+  <script type="text/javascript">
+  $(function() {
+    var flag = 0;
+    $("#redbtn").on("tap", function() {
+      if (!$.validate('form', function(msg) {
+          $.message(msg, {
+            always: function() {
+              $("body").css('overflow', 'hidden');
+            }
+          });
+        })) {
+        return false;
+      }
+
+      var mobile = $('#mobile').val();
+      var recId = 1;
+      var url = '/redp/record/draw/' + recId + '/' + mobile
+      $.get(url, {
+        success: function(data) {
+          var obj = eval(data);
+          var redpType = obj.redpType;
+          var redpAmount = obj.redpAmount;
+
+          switch (redpType) {
+            case 1:
+              //无红包
+              alert("哈哈哈 未中奖！！！");
+              break;
+
+            case 2:
+              //话费
+              $(".call-data").text(redpAmount);
+              $("#mask").show();
+              $("body").css('overflow', 'hidden');
+              $(".redpcall-box").show();
+              flag = 1;
+              break;
+
+            case 3:
+              //流量
+              $(".flow-data").text(redpAmount);
+              $("#mask").show();
+              $("body").css('overflow', 'hidden');
+              $(".redpflow-box").show();       
+              flag = 1;
+              break;
+          }
+        }
+      })
+
+    });
+    document.addEventListener('touchmove', function(event) {
+      if (flag == 1) {
+        event.preventDefault();
+      }
+    })
+    $(".closebtn-call").on("tap", function() {
+      $(".redpcall-box").hide();
+      $("#mask").hide();
+      flag = 0;
+    });
+    $(".closebtn-flow").on("tap", function() {
+      $(".redpflow-box").hide();
+      $("#mask").hide();
+      flag = 0;
+    });
+  });
+  </script>
+  <script src="public/js/lib/jweixin-1.0.0.js"></script>
+  <script>
+      // $(function(){
+      //   $('#onMenuShareTimeline').click(function(){
+      //     console.log('bbbbbbbbbbbbbb');
+      //   });
+      //     console.log('cccccccccccccccc');
+      // });
+      wx.config({
+            debug: true,
+            appId: '{$signPackage.appid}',
+            timestamp: {$signPackage.timestamp},
+            nonceStr: '{$signPackage.noncestr}',
+            signature: '{$signPackage.signature}',
+            jsApiList: [
+                    'checkJsApi',
+                    'onMenuShareTimeline',
+                    'onMenuShareAppMessage'
+                       ]
+                 });
+      wx.ready(function(){
+            wx.onMenuShareTimeline({
+               title: '促销易幸运大抽奖', // 分享标题
+               link: 'http://movie.douban.com/subject/25785114/', // 分享链接
+               imgUrl: 'http://demo.open.weixin.qq.com/jssdk/images/p2166127561.jpg', // 分享图标
+               success: function () { 
+
+                                     },
+               cancel: function () { 
+                 // 用户取消分享后执行的回调函数
+                                                                                                                  }
+                           });
+                             }
+                        });
+    </script>
+</body>
+
+</html>
+{{ end }}
