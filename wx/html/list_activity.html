@@ -1,0 +1,22 @@
+{{ define "activity/list_activity" }}
+<!-- 引用头部 -->
+{{ template "_common/header" getMap "_title" "活动列表" }}
+
+<body>
+  {{ template "_common/user_header" . }}
+  <!-- 活动列表 -->
+  <div class="activity-container grey lighten-3">
+      {{range $activity:=.activity}}
+    <div class="pure-g">
+      <div class="pure-u-1-1">
+              <a href="{{$activity.ActUrl}};">
+                <img class="pure-img" src="{{$activity.ActImgUrl}}">
+        </a>
+      </div>
+    </div>
+    {{end}}
+  </div>
+</body>
+
+</html>
+{{end}}

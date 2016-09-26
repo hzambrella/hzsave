@@ -1,0 +1,31 @@
+{{ define "redp/redp_list" }}
+<!-- 引用头部 -->
+{{ template "_common/header" getMap "_title" "抢红包话费" "_css" "/public/css/ndcss/redp_list.css?v=2016091202"}}
+
+<body class="grey lighten-4">
+  <div class="call-container grey lighten-4">
+    {{ template "_common/user_header" . }}
+
+ 
+    {{range $friend=.friendRecord}}
+<div class="pure-g corow"></div>
+ <div class="contact">
+  <div class="pure-g">
+   <div class="pure-u-1-8">
+       <img class="getuser" src="{{$friend.HeadImgurl}}">
+  </div>
+   <div class="pure-u-11-24">
+       <p class="gname black-text darken-3">{{$friend.NickName}}</p>
+       <p class="info">领取<span class="gmoney">{{$friend.HuaFei}}</span>元话费</p>
+   </div>
+   <div class="pure-u-3-8">
+       <p class="grey-text gtime">{{$friend.RedpTime}}</p>
+   </div>
+ </div>
+ </div>
+
+ {{end}}
+ </div>  
+</body>
+</html>
+{{end}}
